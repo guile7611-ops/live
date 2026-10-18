@@ -1,0 +1,1074 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Painel Administrativo - TikTok LIVE Urna 13 vs 22</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap">
+  <style>
+    :root {
+      --bg: #0B0D12;
+      --card-bg: #141720;
+      --card-border: rgba(255, 255, 255, 0.08);
+      --red-13: #E51A24;
+      --green-22: #0BB053;
+      --tiktok-pink: #FE2C55;
+      --text: #F8FAFC;
+      --text-muted: #94A3B8;
+      --accent: #38BDF8;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Outfit', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 24px;
+    }
+
+    /* Header */
+    .admin-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--card-border);
+      padding-bottom: 20px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .header-title-wrap {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .badge-live-icon {
+      background: var(--tiktok-pink);
+      color: white;
+      font-size: 11px;
+      font-weight: 800;
+      padding: 3px 8px;
+      border-radius: 6px;
+      letter-spacing: 0.5px;
+    }
+
+    h1 { font-size: 22px; font-weight: 800; }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn-link {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--card-border);
+      color: var(--text);
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .btn-link:hover { background: rgba(255, 255, 255, 0.12); transform: translateY(-1px); }
+
+    .ws-indicator {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 6px 12px;
+      border-radius: 999px;
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid var(--card-border);
+    }
+    .ws-dot { width: 8px; height: 8px; border-radius: 50%; background: #EF4444; }
+    .ws-dot.connected { background: #10B981; box-shadow: 0 0 8px #10B981; }
+
+    /* Layout Grid */
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: 1.1fr 1fr;
+      gap: 24px;
+    }
+
+    @media (max-width: 1024px) {
+      .dashboard-grid { grid-template-columns: 1fr; }
+    }
+
+    /* Cards */
+    .admin-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .card-title {
+      font-size: 15px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #FFFFFF;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      padding-bottom: 10px;
+    }
+
+    /* Placar ao vivo no Admin */
+    .live-scoreboard-box {
+      background: rgba(0, 0, 0, 0.4);
+      border-radius: 12px;
+      padding: 16px;
+      border: 1px solid var(--card-border);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .scoreboard-cards {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .score-box {
+      padding: 14px;
+      border-radius: 12px;
+      text-align: center;
+    }
+    .score-box-13 {
+      background: linear-gradient(180deg, rgba(229, 26, 36, 0.25) 0%, rgba(143, 10, 17, 0.3) 100%);
+      border: 1px solid rgba(229, 26, 36, 0.5);
+    }
+    .score-box-22 {
+      background: linear-gradient(180deg, rgba(11, 176, 83, 0.25) 0%, rgba(5, 92, 42, 0.3) 100%);
+      border: 1px solid rgba(11, 176, 83, 0.5);
+    }
+
+    .score-number { font-size: 32px; font-weight: 900; line-height: 1; }
+    .score-votes { font-size: 16px; font-weight: 700; margin-top: 4px; }
+    .score-pct { font-size: 13px; font-weight: 600; opacity: 0.9; }
+
+    /* Barra de disputa mini */
+    .mini-dispute-bar {
+      height: 12px;
+      border-radius: 999px;
+      background: rgba(0, 0, 0, 0.6);
+      display: flex;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .mini-seg-13 { background: var(--red-13); height: 100%; transition: width 0.4s; }
+    .mini-seg-22 { background: var(--green-22); height: 100%; transition: width 0.4s; }
+
+    .score-meta-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    /* Botões de Ação Geral */
+    .match-action-buttons {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+    }
+
+    .btn {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--card-border);
+      color: white;
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 13px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .btn:hover { background: rgba(255, 255, 255, 0.15); transform: translateY(-1px); }
+    .btn-green { background: #059669; border-color: #10B981; }
+    .btn-green:hover { background: #10B981; }
+    .btn-yellow { background: #D97706; border-color: #F59E0B; }
+    .btn-yellow:hover { background: #F59E0B; }
+    .btn-red { background: #DC2626; border-color: #EF4444; }
+    .btn-red:hover { background: #EF4444; }
+
+    /* Formulários e Inputs */
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    label { font-size: 12px; font-weight: 600; color: var(--text-muted); }
+    input[type="text"], input[type="number"], select {
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid var(--card-border);
+      color: white;
+      padding: 10px 12px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-family: inherit;
+      outline: none;
+    }
+    input[type="text"]:focus, select:focus {
+      border-color: var(--accent);
+    }
+
+    .grid-2-cols {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    /* Toggles */
+    .toggles-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .toggle-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(0, 0, 0, 0.25);
+      padding: 8px 12px;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      font-size: 13px;
+    }
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 40px;
+      height: 22px;
+    }
+    .switch input { opacity: 0; width: 0; height: 0; }
+    .slider {
+      position: absolute; cursor: pointer; inset: 0;
+      background-color: #334155;
+      transition: .3s;
+      border-radius: 999px;
+    }
+    .slider:before {
+      position: absolute; content: "";
+      height: 16px; width: 16px; left: 3px; bottom: 3px;
+      background-color: white;
+      transition: .3s;
+      border-radius: 50%;
+    }
+    input:checked + .slider { background-color: var(--green-22); }
+    input:checked + .slider:before { transform: translateX(18px); }
+
+    /* Tabela de Presentes */
+    .gifts-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+    }
+    .gifts-table th {
+      text-align: left;
+      padding: 8px;
+      color: var(--text-muted);
+      border-bottom: 1px solid var(--card-border);
+    }
+    .gifts-table td {
+      padding: 8px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+      vertical-align: middle;
+    }
+    .gift-img-preview { width: 24px; height: 24px; object-fit: contain; }
+
+    /* Feed de Eventos */
+    .events-log-container {
+      max-height: 260px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      background: rgba(0, 0, 0, 0.3);
+      padding: 8px;
+      border-radius: 8px;
+    }
+    .event-log-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(255, 255, 255, 0.03);
+      padding: 6px 10px;
+      border-radius: 6px;
+      font-size: 12px;
+      border-left: 3px solid #64748B;
+    }
+    .event-log-row.side-13 { border-left-color: var(--red-13); }
+    .event-log-row.side-22 { border-left-color: var(--green-22); }
+    .event-log-time { font-family: 'JetBrains Mono', monospace; color: var(--text-muted); font-size: 11px; }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: #1E293B;
+      color: white;
+      border: 1px solid var(--card-border);
+      padding: 12px 20px;
+      border-radius: 8px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      z-index: 9999;
+      display: none;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="admin-header">
+    <div class="header-title-wrap">
+      <span class="badge-live-icon">● TIKTOK LIVE</span>
+      <h1>Painel de Controle da Urna Eletrônica</h1>
+    </div>
+
+    <div class="header-actions">
+      <div class="ws-indicator" id="ws-indicator">
+        <span class="ws-dot" id="ws-dot"></span>
+        <span id="ws-text">Conectando...</span>
+      </div>
+      <a href="/overlay" target="_blank" class="btn-link">
+        <span>📺</span> Abrir Overlay (9:16)
+      </a>
+      <a href="/test" target="_blank" class="btn-link">
+        <span>🧪</span> Cockpit de Teste
+      </a>
+    </div>
+  </header>
+
+  <!-- DASHBOARD GRID -->
+  <main class="dashboard-grid">
+
+    <!-- COLUNA 1: PLACAR, AÇÕES E CONFIGURAÇÕES -->
+    <div style="display: flex; flex-direction: column; gap: 24px;">
+      
+      <!-- 1. PLACAR EM TEMPO REAL & CONTROLE GERAL -->
+      <section class="admin-card">
+        <div class="card-title">
+          <span>📊</span> Status da Disputa &amp; Placar ao Vivo
+        </div>
+
+        <div class="live-scoreboard-box">
+          <div class="scoreboard-cards">
+            <div class="score-box score-box-13">
+              <div class="score-number" style="color: #FF5252;" id="admin-score-13-num">13</div>
+              <div class="score-votes" id="admin-score-13-val">10.842</div>
+              <div class="score-pct" id="admin-score-13-pct">49,6%</div>
+            </div>
+            <div class="score-box score-box-22">
+              <div class="score-number" style="color: #69F0AE;" id="admin-score-22-num">22</div>
+              <div class="score-votes" id="admin-score-22-val">11.000</div>
+              <div class="score-pct" id="admin-score-22-pct">50,4%</div>
+            </div>
+          </div>
+
+          <div class="mini-dispute-bar">
+            <div class="mini-seg-13" id="admin-bar-13" style="width: 49.6%;"></div>
+            <div class="mini-seg-22" id="admin-bar-22" style="width: 50.4%;"></div>
+          </div>
+
+          <div class="score-meta-row">
+            <span>Total: <strong id="admin-total-votes" style="color: white;">21.842</strong></span>
+            <span>Status: <strong id="admin-match-status" style="color: #10B981;">EM ANDAMENTO</strong></span>
+            <span>Tempo: <strong id="admin-timer" style="color: white; font-family: monospace;">00:12:35</strong></span>
+          </div>
+        </div>
+
+        <!-- Botões de Controle Geral -->
+        <div class="match-action-buttons">
+          <button class="btn btn-green" id="btn-admin-start">▶ Iniciar</button>
+          <button class="btn btn-yellow" id="btn-admin-pause">⏸ Pausar</button>
+          <button class="btn btn-red" id="btn-admin-reset" title="Restaura os votos padrão da disputa (10.842 vs 11.000)">🔄 Resetar Padrão</button>
+          <button class="btn" id="btn-admin-zero" style="background: rgba(239, 68, 68, 0.2); border-color: #EF4444; color: #FCA5A5;" title="Zera completamente o placar (0 vs 0)">0️⃣ Zerar Tudo</button>
+          <button class="btn" id="btn-admin-finish">⏹ Encerrar</button>
+        </div>
+      </section>
+
+      <!-- 2. CONFIGURAÇÃO VISUAL & DOS LADOS -->
+      <section class="admin-card">
+        <div class="card-title">
+          <span>🎨</span> Configuração Visual dos Lados
+        </div>
+
+        <div class="form-group">
+          <label>Nome / Título da Live</label>
+          <input type="text" id="cfg-title" value="Votação LIVE">
+        </div>
+
+        <div class="grid-2-cols">
+          <div class="form-group">
+            <label>Número do Lado Esquerdo</label>
+            <input type="text" id="cfg-side13-name" value="13">
+          </div>
+          <div class="form-group">
+            <label>Número do Lado Direito</label>
+            <input type="text" id="cfg-side22-name" value="22">
+          </div>
+        </div>
+
+        <!-- Toggles de Live -->
+        <div class="toggles-list">
+          <div class="toggle-item">
+            <span>Animação da Mão Digitando na Urna</span>
+            <label class="switch">
+              <input type="checkbox" id="cfg-toggle-hand" checked>
+              <span class="slider"></span>
+            </label>
+          </div>
+          <div class="toggle-item">
+            <span>Sons da Urna (Cliques e Confirma)</span>
+            <label class="switch">
+              <input type="checkbox" id="cfg-toggle-sound" checked>
+              <span class="slider"></span>
+            </label>
+          </div>
+          <div class="toggle-item">
+            <span>Chuva de Corações Flutuantes</span>
+            <label class="switch">
+              <input type="checkbox" id="cfg-toggle-hearts" checked>
+              <span class="slider"></span>
+            </label>
+          </div>
+          <div class="toggle-item">
+            <span>Comentários Simulados no Chat</span>
+            <label class="switch">
+              <input type="checkbox" id="cfg-toggle-comments" checked>
+              <span class="slider"></span>
+            </label>
+          </div>
+          <div class="toggle-item">
+            <span>Fundo Transparente para OBS (Chroma / Alpha)</span>
+            <label class="switch">
+              <input type="checkbox" id="cfg-toggle-transparent">
+              <span class="slider"></span>
+            </label>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Modo da Fila de Animações (Combos e Chuva de Votos)</label>
+          <select id="cfg-queue-mode">
+            <option value="detailed">Modo Detalhado (Digita todos os votos e acelera sob carga)</option>
+            <option value="compact">Modo Resumido (Agrupa combos e exibe efeito acumulado)</option>
+          </select>
+        </div>
+
+        <button class="btn btn-green" id="btn-save-settings">💾 Salvar Configurações</button>
+      </section>
+
+      <!-- 2.1 SISTEMA DINÂMICO DE ANIMAÇÕES & LIMITES -->
+      <section class="admin-card">
+        <div class="card-title">
+          <span>⚡</span> Sistema Dinâmico de Presentes &amp; Animações
+        </div>
+
+        <div class="toggles-list">
+          <div class="toggle-item">
+            <div>
+              <strong>Ativar Modo Dinâmico Automático</strong>
+              <div style="font-size: 11px; color: var(--text-muted);">Adapta animações da urna conforme o volume recebido</div>
+            </div>
+            <label class="switch">
+              <input type="checkbox" id="cfg-dynamic-enabled" checked>
+              <span class="slider"></span>
+            </label>
+          </div>
+        </div>
+
+        <div class="grid-2-cols" style="margin-top: 6px;">
+          <div class="form-group">
+            <label>Modo Normal (Max Presentes)</label>
+            <input type="number" id="cfg-normal-max" min="1" max="20" value="5">
+            <span style="font-size: 10px; color: var(--text-muted);">1 a 5: Digita e confirma cada voto</span>
+          </div>
+          <div class="form-group">
+            <label>Modo Acelerado (Max Presentes)</label>
+            <input type="number" id="cfg-accel-max" min="10" max="100" value="50">
+            <span style="font-size: 10px; color: var(--text-muted);">6 a 50: Digitação rápida + "+X votos"</span>
+          </div>
+        </div>
+
+        <div class="grid-2-cols">
+          <div class="form-group">
+            <label>Modo Combo (Acima de)</label>
+            <input type="number" id="cfg-combo-threshold" min="20" max="200" value="50">
+            <span style="font-size: 10px; color: var(--text-muted);">&gt; 50: Banner gigante + marcos especiais</span>
+          </div>
+          <div class="form-group">
+            <label>Velocidade da Mão (Multiplicador)</label>
+            <input type="number" id="cfg-hand-speed" step="0.1" min="0.5" max="2.5" value="1.0">
+            <span style="font-size: 10px; color: var(--text-muted);">0.5x (rápido) a 2.0x (lento)</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Velocidade da Barra de Disputa (Transição em Segundos)</label>
+          <input type="number" id="cfg-bar-speed" step="0.1" min="0.2" max="2.0" value="0.5">
+        </div>
+
+        <button class="btn btn-green" id="btn-save-dynamic">💾 Salvar Parâmetros Dinâmicos</button>
+      </section>
+
+    </div>
+
+    <!-- COLUNA 2: MAPEAMENTO DE PRESENTES, TIKTOK BRIDGE E LOGS -->
+    <div style="display: flex; flex-direction: column; gap: 24px;">
+      
+      <!-- 3. MAPEAMENTO DE PRESENTES -->
+      <section class="admin-card">
+        <div class="card-title">
+          <span>🎁</span> Mapeamento de Presentes do TikTok
+        </div>
+
+        <p style="font-size: 12px; color: var(--text-muted);">
+          Defina qual presente gera votos para qual lado e o peso de votos por unidade.
+        </p>
+
+        <table class="gifts-table">
+          <thead>
+            <tr>
+              <th>Ícone</th>
+              <th>Presente TikTok</th>
+              <th>Vota para</th>
+              <th>Votos/Unid.</th>
+              <th>Ação</th>
+            </tr>
+          </thead>
+          <tbody id="gifts-table-body">
+            <!-- Inserido dinamicamente via JS -->
+          </tbody>
+        </table>
+
+        <div style="display: flex; gap: 8px;">
+          <button class="btn" id="btn-add-gift">+ Adicionar Presente</button>
+          <button class="btn btn-green" id="btn-save-gifts" style="flex: 1;">💾 Salvar Presentes</button>
+        </div>
+      </section>
+
+      <!-- 4. INTEGRAÇÃO TIKTOK LIVE (BRIDGE) -->
+      <section class="admin-card">
+        <div class="card-title">
+          <span>📡</span> Conexão com TikTok LIVE Real
+        </div>
+
+        <div class="form-group">
+          <label>@Usuário da Live no TikTok</label>
+          <div style="display: flex; gap: 8px;">
+            <input type="text" id="tiktok-user-input" placeholder="@seunome" style="flex: 1;">
+            <button class="btn btn-green" id="btn-tiktok-connect">Conectar</button>
+            <button class="btn btn-red" id="btn-tiktok-disconnect" style="display: none;">Desconectar</button>
+          </div>
+        </div>
+
+        <div style="background: rgba(0,0,0,0.3); padding: 10px; border-radius: 8px; font-size: 12px;">
+          <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+            <span>Status da Conexão:</span>
+            <strong id="tiktok-status-label" style="color: #94A3B8;">DESCONECTADO</strong>
+          </div>
+          <div style="display: flex; justify-content: space-between;">
+            <span>Presentes Recebidos:</span>
+            <strong id="tiktok-gifts-count" style="color: white;">0</strong>
+          </div>
+        </div>
+
+        <button class="btn" id="btn-toggle-sim" style="background: rgba(254, 44, 85, 0.2); border-color: var(--tiktok-pink);">
+          <span>🤖</span> Alternar Simulador de Live Automática
+        </button>
+      </section>
+
+      <!-- 5. COCKPIT DE DISPARO RÁPIDO & SIMULADOR DE CARGA -->
+      <section class="admin-card">
+        <div class="card-title">
+          <span>⚡</span> Simulador de Carga &amp; Testes de Estresse
+        </div>
+
+        <!-- Botão Destaque do Teste Obrigatório -->
+        <button class="btn btn-yellow" id="btn-test-mandatory-scenario" style="width: 100%; font-weight: 800; padding: 12px; margin-bottom: 8px;">
+          🚀 Executar Carga Oficial (1.000 no 22 + 400 no 13 intercalados partindo de zero)
+        </button>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+          <button class="btn" id="btn-test-13" style="background: rgba(229, 26, 36, 0.2); border-color: var(--red-13);">
+            🔴 Voto 13 (+1) Normal
+          </button>
+          <button class="btn" id="btn-test-22" style="background: rgba(11, 176, 83, 0.2); border-color: var(--green-22);">
+            🟢 Voto 22 (+1) Normal
+          </button>
+          <button class="btn" id="btn-test-accel-13" style="background: rgba(229, 26, 36, 0.3); border-color: var(--red-13);">
+            ⚡ Acelerado 13 (+35)
+          </button>
+          <button class="btn" id="btn-test-accel-22" style="background: rgba(11, 176, 83, 0.3); border-color: var(--green-22);">
+            ⚡ Acelerado 22 (+35)
+          </button>
+          <button class="btn" id="btn-test-combo-100" style="background: rgba(255, 215, 0, 0.2); border-color: #FFD700; color: #FFD700;">
+            🌟 Combo 100
+          </button>
+          <button class="btn" id="btn-test-combo-500" style="background: rgba(0, 240, 255, 0.2); border-color: #00F0FF; color: #00F0FF;">
+            💎 Mega Combo 500
+          </button>
+          <button class="btn" id="btn-test-combo-1000" style="background: rgba(255, 0, 85, 0.2); border-color: #FF0055; color: #FF0055; grid-column: span 2;">
+            🔥 Ultra Combo 1.000
+          </button>
+        </div>
+      </section>
+
+      <!-- 6. AUDITORIA E LOGS AO VIVO -->
+      <section class="admin-card">
+        <div class="card-title">
+          <span>📜</span> Histórico de Eventos Recentes
+        </div>
+
+        <div class="events-log-container" id="events-log-box">
+          <div style="font-size: 11px; color: var(--text-muted); text-align: center; padding: 10px;">
+            Aguardando eventos...
+          </div>
+        </div>
+      </section>
+
+    </div>
+
+  </main>
+
+  <div class="toast" id="admin-toast">Configurações salvas com sucesso!</div>
+
+  <!-- SCRIPT DO PAINEL ADMIN -->
+  <script>
+    let currentState = null;
+    let ws = null;
+
+    const wsDot = document.getElementById('ws-dot');
+    const wsText = document.getElementById('ws-text');
+
+    function connectWS() {
+      const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+      const wsUrl = `${protocol}//${window.location.host}/ws`;
+
+      ws = new WebSocket(wsUrl);
+
+      ws.onopen = () => {
+        wsDot.classList.add('connected');
+        wsText.textContent = 'Conectado';
+      };
+
+      ws.onmessage = (event) => {
+        try {
+          const msg = JSON.parse(event.data);
+          handleWSMessage(msg);
+        } catch (e) {
+          console.error('Erro ao ler msg WS:', e);
+        }
+      };
+
+      ws.onclose = () => {
+        wsDot.classList.remove('connected');
+        wsText.textContent = 'Reconectando...';
+        setTimeout(connectWS, 2000);
+      };
+    }
+
+    function handleWSMessage(msg) {
+      if (msg.type === 'INIT_STATE') {
+        currentState = msg.data;
+        renderFullState(currentState);
+      } else if (msg.type === 'SCORE_SYNC') {
+        if (currentState) {
+          currentState.match.side13.votes = msg.data.votes13;
+          currentState.match.side22.votes = msg.data.votes22;
+          currentState.match.totalVotes = msg.data.totalVotes;
+          currentState.match.pct13 = msg.data.pct13;
+          currentState.match.pct22 = msg.data.pct22;
+          renderScoreboard(currentState.match);
+        }
+      } else if (msg.type === 'VOTE_EVENT') {
+        prependEventLog(msg.data);
+      } else if (msg.type === 'MATCH_STATUS' || msg.type === 'RESET_EVENT') {
+        if (currentState) {
+          const matchData = msg.data.match || msg.data;
+          currentState.match = { ...currentState.match, ...matchData };
+          renderScoreboard(currentState.match);
+        }
+      } else if (msg.type === 'TIKTOK_STATUS') {
+        renderTikTokStatus(msg.data);
+      }
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('admin-toast');
+      toast.textContent = msg;
+      toast.style.display = 'block';
+      setTimeout(() => toast.style.display = 'none', 3000);
+    }
+
+    function renderScoreboard(match) {
+      document.getElementById('admin-score-13-val').textContent = match.side13.votes.toLocaleString('pt-BR');
+      document.getElementById('admin-score-22-val').textContent = match.side22.votes.toLocaleString('pt-BR');
+      document.getElementById('admin-score-13-pct').textContent = `${match.pct13.toFixed(1).replace('.', ',')}%`;
+      document.getElementById('admin-score-22-pct').textContent = `${match.pct22.toFixed(1).replace('.', ',')}%`;
+      document.getElementById('admin-total-votes').textContent = match.totalVotes.toLocaleString('pt-BR');
+
+      document.getElementById('admin-bar-13').style.width = `${match.pct13}%`;
+      document.getElementById('admin-bar-22').style.width = `${match.pct22}%`;
+
+      const statusEl = document.getElementById('admin-match-status');
+      if (match.status === 'running') {
+        statusEl.textContent = 'EM ANDAMENTO';
+        statusEl.style.color = '#10B981';
+      } else if (match.status === 'paused') {
+        statusEl.textContent = 'PAUSADO';
+        statusEl.style.color = '#F59E0B';
+      } else {
+        statusEl.textContent = 'ENCERRADO';
+        statusEl.style.color = '#EF4444';
+      }
+
+      const h = Math.floor(match.timerSeconds / 3600);
+      const m = Math.floor((match.timerSeconds % 3600) / 60);
+      const s = match.timerSeconds % 60;
+      document.getElementById('admin-timer').textContent = 
+        `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+    }
+
+    function renderFullState(state) {
+      renderScoreboard(state.match);
+
+      // Configs
+      document.getElementById('cfg-title').value = state.match.title || 'Votação LIVE';
+      document.getElementById('cfg-side13-name').value = state.match.side13.name || '13';
+      document.getElementById('cfg-side22-name').value = state.match.side22.name || '22';
+
+      document.getElementById('cfg-toggle-hand').checked = state.settings.enableHandAnimation !== false;
+      document.getElementById('cfg-toggle-sound').checked = state.settings.enableSound !== false;
+      document.getElementById('cfg-toggle-hearts').checked = state.settings.enableHearts !== false;
+      document.getElementById('cfg-toggle-comments').checked = state.settings.enableSimulatedComments !== false;
+      document.getElementById('cfg-toggle-transparent').checked = state.settings.transparentBackground === true;
+      document.getElementById('cfg-queue-mode').value = state.settings.queueMode || 'detailed';
+
+      // Parâmetros Dinâmicos
+      if (document.getElementById('cfg-dynamic-enabled')) {
+        document.getElementById('cfg-dynamic-enabled').checked = state.settings.dynamicAnimationEnabled !== false;
+      }
+      if (document.getElementById('cfg-normal-max')) {
+        document.getElementById('cfg-normal-max').value = state.settings.normalMaxCount || 5;
+      }
+      if (document.getElementById('cfg-accel-max')) {
+        document.getElementById('cfg-accel-max').value = state.settings.acceleratedMaxCount || 50;
+      }
+      if (document.getElementById('cfg-combo-threshold')) {
+        document.getElementById('cfg-combo-threshold').value = state.settings.comboThreshold || 50;
+      }
+      if (document.getElementById('cfg-hand-speed')) {
+        document.getElementById('cfg-hand-speed').value = state.settings.handSpeed || 1.0;
+      }
+      if (document.getElementById('cfg-bar-speed')) {
+        document.getElementById('cfg-bar-speed').value = state.settings.barTransitionDuration || 0.5;
+      }
+
+      renderGiftsTable(state.gifts || []);
+      renderHistory(state.eventHistory || []);
+    }
+
+    function renderGiftsTable(gifts) {
+      const tbody = document.getElementById('gifts-table-body');
+      tbody.innerHTML = '';
+
+      gifts.forEach((g, idx) => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td><img src="${g.icon || 'assets/rose.png'}" class="gift-img-preview"></td>
+          <td><input type="text" value="${g.name}" data-idx="${idx}" class="gift-name-input" style="padding: 4px 8px; width: 110px;"></td>
+          <td>
+            <select data-idx="${idx}" class="gift-target-select" style="padding: 4px 8px;">
+              <option value="13" ${g.targetSide === '13' ? 'selected' : ''}>13 (Vermelho)</option>
+              <option value="22" ${g.targetSide === '22' ? 'selected' : ''}>22 (Verde)</option>
+            </select>
+          </td>
+          <td><input type="number" min="1" value="${g.votesPerUnit || 1}" data-idx="${idx}" class="gift-votes-input" style="padding: 4px 8px; width: 65px;"></td>
+          <td><button class="btn btn-red" style="padding: 4px 8px; font-size: 11px;" onclick="removeGift(${idx})">✕</button></td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    window.removeGift = function(idx) {
+      if (currentState && currentState.gifts) {
+        currentState.gifts.splice(idx, 1);
+        renderGiftsTable(currentState.gifts);
+      }
+    };
+
+    function prependEventLog(event) {
+      const box = document.getElementById('events-log-box');
+      const row = document.createElement('div');
+      row.className = `event-log-row side-${event.candidate}`;
+      const modeLabel = event.mode ? `[${event.mode.toUpperCase()}] ` : '';
+      row.innerHTML = `
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <img src="${event.icon}" width="18" height="18" style="object-fit: contain;">
+          <span><small style="color: #94A3B8;">${modeLabel}</small><strong>${event.user}</strong> enviou ${event.giftName} (x${event.units || event.amount || 1}) ➔ <strong>+${event.amount || event.units}</strong> para ${event.candidate}</span>
+        </div>
+        <span class="event-log-time">${new Date().toLocaleTimeString('pt-BR')}</span>
+      `;
+      box.insertBefore(row, box.firstChild);
+
+      while (box.children.length > 25) {
+        box.removeChild(box.lastChild);
+      }
+    }
+
+    function renderHistory(history) {
+      const box = document.getElementById('events-log-box');
+      box.innerHTML = '';
+      if (history.length === 0) {
+        box.innerHTML = '<div style="font-size: 11px; color: var(--text-muted); text-align: center; padding: 10px;">Nenhum evento registrado ainda.</div>';
+        return;
+      }
+      history.slice(0, 20).forEach(ev => {
+        const row = document.createElement('div');
+        row.className = `event-log-row side-${ev.side || ev.candidate}`;
+        row.innerHTML = `
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span><strong>${ev.username || ev.user}</strong> enviou ${ev.gift_name || ev.giftName} ➔ <strong>+${ev.delta_votes || ev.amount}</strong> para ${ev.side || ev.candidate}</span>
+          </div>
+          <span class="event-log-time">${ev.created_at || new Date(ev.timestamp).toLocaleTimeString('pt-BR')}</span>
+        `;
+        box.appendChild(row);
+      });
+    }
+
+    function renderTikTokStatus(statusData) {
+      const label = document.getElementById('tiktok-status-label');
+      label.textContent = statusData.status.toUpperCase();
+      if (statusData.status === 'connected') {
+        label.style.color = '#10B981';
+      } else if (statusData.status === 'simulating') {
+        label.style.color = '#38BDF8';
+      } else {
+        label.style.color = '#94A3B8';
+      }
+      if (statusData.stats) {
+        document.getElementById('tiktok-gifts-count').textContent = statusData.stats.giftsReceived || 0;
+      }
+    }
+
+    // Handlers dos Botões de Partida
+    document.getElementById('btn-admin-start').onclick = () => sendAction('start');
+    document.getElementById('btn-admin-pause').onclick = () => sendAction('pause');
+    document.getElementById('btn-admin-finish').onclick = () => sendAction('finish');
+    document.getElementById('btn-admin-reset').onclick = () => sendAction('reset');
+    const btnZero = document.getElementById('btn-admin-zero');
+    if (btnZero) {
+      btnZero.onclick = () => sendAction('zero');
+    }
+
+    function sendAction(action, payload = {}) {
+      fetch('/api/match/action', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action, payload })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success && data.match && currentState) {
+          currentState.match = { ...currentState.match, ...data.match };
+          renderScoreboard(currentState.match);
+        }
+        showToast(`Ação "${action.toUpperCase()}" executada com sucesso!`);
+      })
+      .catch(err => {
+        console.error('Erro ao executar ação:', err);
+        showToast(`Erro ao executar "${action}"`);
+      });
+    }
+
+    // Salvar Configurações Gerais
+    document.getElementById('btn-save-settings').onclick = () => {
+      const newSettings = {
+        enableHandAnimation: document.getElementById('cfg-toggle-hand').checked,
+        enableSound: document.getElementById('cfg-toggle-sound').checked,
+        enableHearts: document.getElementById('cfg-toggle-hearts').checked,
+        enableSimulatedComments: document.getElementById('cfg-toggle-comments').checked,
+        transparentBackground: document.getElementById('cfg-toggle-transparent').checked,
+        queueMode: document.getElementById('cfg-queue-mode').value
+      };
+
+      fetch('/api/settings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newSettings)
+      })
+      .then(res => res.json())
+      .then(() => {
+        sendAction('setTitles', {
+          title: document.getElementById('cfg-title').value,
+          side13Name: document.getElementById('cfg-side13-name').value,
+          side22Name: document.getElementById('cfg-side22-name').value
+        });
+        showToast('Configurações salvas e sincronizadas!');
+      });
+    };
+
+    // Salvar Parâmetros do Sistema Dinâmico
+    document.getElementById('btn-save-dynamic').onclick = () => {
+      const dynSettings = {
+        dynamicAnimationEnabled: document.getElementById('cfg-dynamic-enabled').checked,
+        normalMaxCount: parseInt(document.getElementById('cfg-normal-max').value, 10) || 5,
+        acceleratedMaxCount: parseInt(document.getElementById('cfg-accel-max').value, 10) || 50,
+        comboThreshold: parseInt(document.getElementById('cfg-combo-threshold').value, 10) || 50,
+        handSpeed: parseFloat(document.getElementById('cfg-hand-speed').value) || 1.0,
+        barTransitionDuration: parseFloat(document.getElementById('cfg-bar-speed').value) || 0.5
+      };
+
+      fetch('/api/settings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(dynSettings)
+      })
+      .then(res => res.json())
+      .then(() => showToast('Parâmetros dinâmicos salvos com sucesso!'));
+    };
+
+    // Salvar Presentes
+    document.getElementById('btn-save-gifts').onclick = () => {
+      const names = document.querySelectorAll('.gift-name-input');
+      const targets = document.querySelectorAll('.gift-target-select');
+      const votes = document.querySelectorAll('.gift-votes-input');
+
+      const updated = [];
+      names.forEach((el, idx) => {
+        updated.push({
+          id: 'gift_' + idx,
+          name: el.value.trim(),
+          targetSide: targets[idx].value,
+          votesPerUnit: parseInt(votes[idx].value, 10) || 1,
+          icon: targets[idx].value === '13' ? 'assets/rose.png' : 'assets/white_flower.png'
+        });
+      });
+
+      fetch('/api/gifts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ gifts: updated })
+      })
+      .then(res => res.json())
+      .then(() => showToast('Mapeamento de presentes atualizado!'));
+    };
+
+    document.getElementById('btn-add-gift').onclick = () => {
+      if (currentState) {
+        currentState.gifts = currentState.gifts || [];
+        currentState.gifts.push({
+          id: 'new_' + Date.now(),
+          name: 'Novo Presente',
+          targetSide: '13',
+          votesPerUnit: 1,
+          icon: 'assets/rose.png'
+        });
+        renderGiftsTable(currentState.gifts);
+      }
+    };
+
+    // Disparos e Cockpit de Teste
+    document.getElementById('btn-test-13').onclick = () => triggerVote('13', 1, 'Rosa');
+    document.getElementById('btn-test-22').onclick = () => triggerVote('22', 1, 'Flor branca');
+    document.getElementById('btn-test-accel-13').onclick = () => triggerVote('13', 35, 'Rosa');
+    document.getElementById('btn-test-accel-22').onclick = () => triggerVote('22', 35, 'Flor branca');
+    document.getElementById('btn-test-combo-100').onclick = () => triggerVote('22', 100, 'Flor branca');
+    document.getElementById('btn-test-combo-500').onclick = () => triggerVote('13', 500, 'Rosa');
+    document.getElementById('btn-test-combo-1000').onclick = () => triggerVote('22', 1000, 'Flor branca');
+
+    // Botão de Carga Oficial Obrigatória (1.000 no 22 + 400 no 13 intercalados partindo de zero)
+    document.getElementById('btn-test-mandatory-scenario').onclick = () => {
+      if (!confirm('Iniciar simulação oficial partindo de zero com 1.000 presentes para o 22 e 400 presentes para o 13 intercalados?')) {
+        return;
+      }
+      showToast('Executando teste de carga oficial...');
+      fetch('/api/test/heavy-load', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ startFromZero: true })
+      })
+      .then(r => r.json())
+      .then(res => {
+        showToast(`Carga concluída! 13: ${res.scores.votes13} (${res.scores.pct13}%) | 22: ${res.scores.votes22} (${res.scores.pct22}%)`);
+      });
+    };
+
+    function triggerVote(candidate, amount, giftName) {
+      fetch('/api/vote', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ candidate, amount, user: '@admin.live', giftName })
+      });
+    }
+
+    // TikTok Bridge
+    document.getElementById('btn-tiktok-connect').onclick = () => {
+      const user = document.getElementById('tiktok-user-input').value.trim();
+      if (!user) return alert('Digite o usuário do TikTok');
+
+      fetch('/api/tiktok/connect', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username: user })
+      })
+      .then(r => r.json())
+      .then(res => {
+        if (res.success) {
+          showToast(`Conectado à live de ${res.username || user}!`);
+          document.getElementById('btn-tiktok-connect').style.display = 'none';
+          document.getElementById('btn-tiktok-disconnect').style.display = 'inline-flex';
+        } else {
+          alert('Erro ao conectar: ' + res.error);
+        }
+      });
+    };
+
+    document.getElementById('btn-tiktok-disconnect').onclick = () => {
+      fetch('/api/tiktok/disconnect', { method: 'POST' })
+      .then(r => r.json())
+      .then(() => {
+        showToast('Desconectado do TikTok.');
+        document.getElementById('btn-tiktok-connect').style.display = 'inline-flex';
+        document.getElementById('btn-tiktok-disconnect').style.display = 'none';
+      });
+    };
+
+    document.getElementById('btn-toggle-sim').onclick = () => {
+      fetch('/api/tiktok/simulate', { method: 'POST' })
+      .then(r => r.json())
+      .then(res => {
+        showToast(res.isSimulating ? 'Simulador Automático INICIADO!' : 'Simulador PARADO.');
+      });
+    };
+
+    // Iniciar conexão WebSocket
+    connectWS();
+  </script>
+</body>
+</html>

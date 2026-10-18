@@ -1,0 +1,17 @@
+{
+  "name": "live-tiktok",
+  "version": "1.0.0",
+  "description": "Overlay web vertical no formato **9:16** inspirado na interface de transmissão ao vivo do **TikTok**, com gamificação, urna eletrônica 3D, mão animada com dedos e manga calibrados, placares em tempo real, barra de disputa dinâmica e feed de eventos/comentários.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "express": "^5.3.0",
+    "ws": "^8.22.0"
+  }
+}

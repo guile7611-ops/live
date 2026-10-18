@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Urna Eletrônica Interativa - QUEM VENCE DOMINGO?</title>
+  <meta name="description" content="Overlay interativo vertical 9:16 da Urna Eletrônica com sistema dinâmico de presentes, fila inteligente e placares em tempo real.">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- VIEWPORT WRAPPER (9:16 CONTAINER) -->
+  <main class="live-viewport-wrapper">
+    <div id="live-container">
+      
+      <!-- Vinheta de iluminação cinematográfica -->
+      <div class="live-vignette"></div>
+
+      <!-- ================================================================
+           1. TOPO DA TRANSMISSÃO - QUEM VENCE DOMINGO?
+           ================================================================ -->
+      <header class="live-header-clean">
+        <h1 class="broadcast-main-title" id="main-title">QUEM VENCE DOMINGO?</h1>
+
+        <!-- ================================================================
+             REGRA VISUAL DOS PRESENTES (ROSA = 13 | FLOR BRANCA = 22)
+             ================================================================ -->
+        <div class="rules-visual-badge">
+          <div class="rule-side rule-13">
+            <img src="assets/rose.png" class="rule-gift-img" alt="Rosa">
+            <span class="rule-gift-name">ROSA</span>
+            <span class="rule-arrow">➔</span>
+            <span class="rule-vote-num num-13">13</span>
+          </div>
+
+          <div class="rule-divider">VS</div>
+
+          <div class="rule-side rule-22">
+            <span class="rule-vote-num num-22">22</span>
+            <span class="rule-arrow">➔</span>
+            <span class="rule-gift-name">ROSA BRANCA</span>
+            <img src="assets/white_flower.png" class="rule-gift-img" alt="Rosa Branca">
+          </div>
+        </div>
+      </header>
+
+      <!-- ================================================================
+           2. PLACAR PRINCIPAL (13 À ESQUERDA, 22 À DIREITA)
+           ================================================================ -->
+      <section class="score-board-section">
+        <div class="score-cards-grid">
+          
+          <!-- Card 13 (Vermelho) -->
+          <div class="score-card-13" id="card-13">
+            <div class="candidate-big-number" id="label-num-13">13</div>
+            <div class="candidate-votes-value" id="score-13-val">10.842</div>
+            <div class="candidate-percentage" id="score-13-pct">49,6%</div>
+          </div>
+
+          <!-- Card Centro (Cronômetro & Total Geral) -->
+          <div class="score-card-center">
+            <div class="center-timer-pill" id="live-timer">00:12:35</div>
+            <div class="center-total-wrap">
+              <div class="center-total-label">TOTAL DE VOTOS</div>
+              <div class="center-total-value" id="total-votes-val">21.842</div>
+            </div>
+          </div>
+
+          <!-- Card 22 (Verde) -->
+          <div class="score-card-22" id="card-22">
+            <div class="candidate-big-number" id="label-num-22">22</div>
+            <div class="candidate-votes-value" id="score-22-val">11.000</div>
+            <div class="candidate-percentage" id="score-22-pct">50,4%</div>
+          </div>
+
+        </div>
+
+        <!-- ================================================================
+             3. BARRA DE DISPUTA HORIZONTAL COM DIVISOR MÓVEL
+             ================================================================ -->
+        <div class="dispute-bar-container" title="Barra de Disputa em Tempo Real">
+          <div class="dispute-bar-gloss"></div>
+          <div class="dispute-segment dispute-segment-13" id="dispute-bar-13" style="width: 49.6%;"></div>
+          <div class="dispute-segment dispute-segment-22" id="dispute-bar-22" style="width: 50.4%;"></div>
+        </div>
+      </section>
+
+      <!-- Notificação de Mega Combo (>50 presentes) -->
+      <div class="mega-combo-banner-wrap">
+        <div class="mega-combo-banner" id="mega-combo-banner">
+          <div class="combo-glow-layer"></div>
+          <div class="combo-content">
+            <span class="combo-user" id="combo-user">@espectador</span>
+            <span class="combo-label" id="combo-label">COMBO 100 PRESENTES!</span>
+            <span class="combo-number" id="combo-number">+100 VOTOS</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================================================================
+           5. URNA ELETRÔNICA CENTRAL COM MÃO ANIMADA
+           ================================================================ -->
+      <section class="urna-stage-container" id="urna-stage">
+        
+        <div class="urna-chassis" id="urna-chassis">
+          
+          <!-- Mão animada com manga e dedo indicador posicionado sobre a urna -->
+          <div class="animated-hand-sprite idle" id="animated-hand">
+            <img src="assets/hand_pointing_perfect.png" alt="Mão animada digitando na urna">
+          </div>
+
+          <!-- Indicador Flutuante de Votos Acelerados (+X votos) -->
+          <div class="accel-votes-indicator" id="accel-indicator">+35 VOTOS!</div>
+
+          <!-- Painel Principal da Urna (Tela LCD à esquerda + Teclado à direita) -->
+          <div class="urna-main-panel">
+            
+            <!-- TELA LCD DA URNA -->
+            <div class="urna-screen-housing">
+              <div class="urna-lcd-screen" id="urna-screen">
+                
+                <!-- Estado de votação normal -->
+                <div id="screen-voting" style="display: flex; flex-direction: column; width: 100%; height: 100%; justify-content: space-between;">
+                  <div>
+                    <div class="screen-header-title">SEU VOTO PARA</div>
+                    <div class="screen-header-line"></div>
+                    <div class="screen-digit-boxes">
+                      <div class="digit-box" id="digit-box-0"></div>
+                      <div class="digit-box" id="digit-box-1"></div>
+                    </div>
+                  </div>
+                  <div class="screen-candidate-info" id="screen-candidate-info">DIGITE SEU VOTO</div>
+                </div>
+
+                <!-- Estado oficial "FIM" após confirmar -->
+                <div class="screen-fim-state" id="screen-fim">
+                  <div class="fim-text">FIM</div>
+                  <div class="fim-subtext">GRAVANDO VOTO...</div>
+                </div>
+
+              </div>
+            </div>
+
+            <!-- TECLADO NUMÉRICO TÁTIL DA URNA -->
+            <div class="urna-keypad-housing" id="urna-keypad">
+              <div class="numeric-keys-grid">
+                <button class="urna-key" data-key="1">1</button>
+                <button class="urna-key" data-key="2">2</button>
+                <button class="urna-key" data-key="3">3</button>
+                <button class="urna-key" data-key="4">4</button>
+                <button class="urna-key key-5-dot" data-key="5">5</button>
+                <button class="urna-key" data-key="6">6</button>
+                <button class="urna-key" data-key="7">7</button>
+                <button class="urna-key" data-key="8">8</button>
+                <button class="urna-key" data-key="9">9</button>
+                <div class="urna-key-0-wrap">
+                  <button class="urna-key" data-key="0" style="width: 100%;">0</button>
+                </div>
+              </div>
+
+              <!-- Teclas de Ação no Rodapé -->
+              <div class="action-keys-row">
+                <button class="urna-key btn-branco" data-key="branco">BRANCO</button>
+                <button class="urna-key btn-corrige" data-key="corrige">CORRIGE</button>
+                <button class="urna-key btn-confirma" data-key="confirma">CONFIRMA</button>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Ranhuras de ventilação inferiores da urna -->
+          <div class="urna-vents-row">
+            <div class="vent-slit"></div>
+            <div class="vent-slit"></div>
+            <div class="vent-slit"></div>
+            <div class="vent-slit"></div>
+            <div class="vent-slit"></div>
+            <div class="vent-slit"></div>
+            <div class="vent-slit"></div>
+            <div class="vent-slit"></div>
+            <div class="vent-slit"></div>
+            <div class="vent-slit"></div>
+            <div class="vent-slit"></div>
+            <div class="vent-slit"></div>
+            <div class="vent-slit"></div>
+            <div class="vent-slit"></div>
+            <div class="vent-slit"></div>
+            <div class="vent-slit"></div>
+            <div class="vent-slit"></div>
+            <div class="vent-slit"></div>
+          </div>
+
+        </div>
+
+      </section>
+
+      <!-- ================================================================
+           6. IDENTIFICAÇÃO DE ENTRETENIMENTO (DISCLAIMER PERMANENTE)
+           ================================================================ -->
+      <footer class="live-bottom-section">
+        <div class="disclaimer-watermark">
+          Simulação interativa para entretenimento. Não possui caráter oficial nem vínculo com pesquisa eleitoral.
+        </div>
+      </footer>
+
+    </div>
+  </main>
+
+  <!-- SCRIPTS MODULARES -->
+  <script src="js/audio.js"></script>
+  <script src="js/hand.js"></script>
+  <script src="js/urna.js"></script>
+  <script src="js/live.js"></script>
+
+  <script>
+    window.addEventListener('DOMContentLoaded', () => {
+      if (window.liveController) window.liveController.init();
+      if (window.urnaController) window.urnaController.init();
+
+      const handEl = document.getElementById('animated-hand');
+      const stageEl = document.getElementById('urna-chassis');
+      if (window.handController && handEl && stageEl) {
+        window.handController.init(handEl, stageEl);
+      }
+
+      // Desbloqueio de áudio
+      const unlockAudio = () => {
+        if (window.soundEngine) window.soundEngine.init();
+        window.removeEventListener('click', unlockAudio);
+        window.removeEventListener('keydown', unlockAudio);
+      };
+      window.addEventListener('click', unlockAudio);
+      window.addEventListener('keydown', unlockAudio);
+    });
+  </script>
+</body>
+</html>

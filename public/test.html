@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cockpit de Testes &amp; Simulação - TikTok LIVE Urna 13 vs 22</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap">
+  <style>
+    :root {
+      --bg: #0A0C10;
+      --card-bg: #13161F;
+      --border: rgba(255, 255, 255, 0.08);
+      --red: #E51A24;
+      --green: #0BB053;
+      --pink: #FE2C55;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Outfit', sans-serif;
+      background: var(--bg);
+      color: #FFF;
+      padding: 24px;
+      min-height: 100vh;
+    }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 16px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .nav-btn {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid var(--border);
+      color: white;
+      padding: 8px 16px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 13px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 20px;
+    }
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    h2 { font-size: 16px; font-weight: 700; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 8px; }
+    .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    button {
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 13px;
+      cursor: pointer;
+      border: 1px solid transparent;
+      color: white;
+      background: rgba(255,255,255,0.08);
+      transition: all 0.2s;
+    }
+    button:hover { transform: translateY(-1px); filter: brightness(1.15); }
+    .btn-red { background: rgba(229, 26, 36, 0.25); border-color: var(--red); color: #FF8A80; }
+    .btn-green { background: rgba(11, 176, 83, 0.25); border-color: var(--green); color: #B9F6CA; }
+    .btn-full { grid-column: span 2; }
+    input, select {
+      background: rgba(0,0,0,0.4);
+      border: 1px solid var(--border);
+      color: white;
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 13px;
+    }
+    .status-box {
+      background: rgba(0,0,0,0.3);
+      padding: 12px;
+      border-radius: 8px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+  </style>
+</head>
+<body>
+
+  <header class="header">
+    <div>
+      <h1 style="font-size: 20px; font-weight: 800;">🧪 Cockpit de Testes &amp; Simulação</h1>
+      <p style="font-size: 12px; color: #94A3B8;">Dispare eventos simultâneos, teste a fila inteligente e valide a estabilidade da live.</p>
+    </div>
+    <div style="display: flex; gap: 10px;">
+      <a href="/overlay" target="_blank" class="nav-btn">📺 Abrir Overlay</a>
+      <a href="/admin" target="_blank" class="nav-btn">⚙️ Painel Admin</a>
+    </div>
+  </header>
+
+  <main class="grid">
+    
+    <!-- 1. Votos Diretos -->
+    <div class="card">
+      <h2>🔴 Disparos 13 (Vermelho)</h2>
+      <div class="btn-grid">
+        <button class="btn-red" onclick="vote('13', 1, 'Rosa')">+1 Voto (Rosa)</button>
+        <button class="btn-red" onclick="vote('13', 5, 'Rosa')">+5 Combo (Rosa)</button>
+        <button class="btn-red" onclick="vote('13', 10, 'Rosa')">+10 Combo (Rosa)</button>
+        <button class="btn-red" onclick="vote('13', 50, 'Presente')">+50 Mega (Presente)</button>
+        <button class="btn-red btn-full" onclick="stressTest('13', 15)">🔥 Stress Test (15 eventos rápidos 13)</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>🟢 Disparos 22 (Verde)</h2>
+      <div class="btn-grid">
+        <button class="btn-green" onclick="vote('22', 1, 'Flor branca')">+1 Voto (Flor)</button>
+        <button class="btn-green" onclick="vote('22', 5, 'Flor branca')">+5 Combo (Flor)</button>
+        <button class="btn-green" onclick="vote('22', 10, 'Flor branca')">+10 Combo (Flor)</button>
+        <button class="btn-green" onclick="vote('22', 50, 'Coração')">+50 Mega (Coração)</button>
+        <button class="btn-green btn-full" onclick="stressTest('22', 15)">🔥 Stress Test (15 eventos rápidos 22)</button>
+      </div>
+    </div>
+
+    <!-- 2. Envio Customizado de Presente -->
+    <div class="card">
+      <h2>🎁 Enviar Presente Customizado</h2>
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <input type="text" id="cust-user" placeholder="@usuario_tiktok" value="@viewer_vip">
+        <select id="cust-gift">
+          <option value="Rosa">Rosa (➔ 13)</option>
+          <option value="Flor branca">Flor branca (➔ 22)</option>
+          <option value="Presente">Presente (➔ 13, peso x5)</option>
+          <option value="Coração">Coração (➔ 22, peso x2)</option>
+        </select>
+        <input type="number" id="cust-count" placeholder="Quantidade" value="10" min="1">
+        <button onclick="sendCustomGift()" style="background: var(--pink); border-color: var(--pink);">
+          🚀 Disparar Webhook / Presente
+        </button>
+      </div>
+    </div>
+
+    <!-- 3. Status e Métricas da Conexão -->
+    <div class="card">
+      <h2>📡 Métricas em Tempo Real</h2>
+      <div class="status-box">
+        <div>WebSocket: <span id="ws-status" style="color: #10B981;">Conectando...</span></div>
+        <div>Votos 13: <span id="metric-13">--</span></div>
+        <div>Votos 22: <span id="metric-22">--</span></div>
+        <div>Total: <span id="metric-total">--</span></div>
+        <div>Eventos enviados nesta sessão: <span id="metric-sent">0</span></div>
+      </div>
+      <div style="display: flex; gap: 8px;">
+        <button onclick="fetch('/api/match/action', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ action: 'reset' }) })" style="flex: 1; background: rgba(239, 68, 68, 0.2); border-color: #EF4444; color: #FCA5A5;">
+          🔄 Resetar Padrão (10.842 vs 11.000)
+        </button>
+        <button onclick="fetch('/api/match/action', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ action: 'zero' }) })" style="flex: 1; background: rgba(148, 163, 184, 0.2); border-color: #94A3B8; color: #E2E8F0;">
+          0️⃣ Zerar Tudo (0 vs 0)
+        </button>
+      </div>
+    </div>
+
+  </main>
+
+  <script>
+    let sentCount = 0;
+    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+    const ws = new WebSocket(`${protocol}//${window.location.host}/ws`);
+
+    ws.onopen = () => document.getElementById('ws-status').textContent = 'Conectado (Ativo)';
+    ws.onclose = () => document.getElementById('ws-status').textContent = 'Desconectado';
+    ws.onmessage = (e) => {
+      try {
+        const msg = JSON.parse(e.data);
+        if (msg.type === 'INIT_STATE' || msg.type === 'SCORE_SYNC') {
+          const match = msg.type === 'INIT_STATE' ? msg.data.match : msg.data;
+          document.getElementById('metric-13').textContent = (match.side13?.votes || match.votes13 || 0).toLocaleString('pt-BR');
+          document.getElementById('metric-22').textContent = (match.side22?.votes || match.votes22 || 0).toLocaleString('pt-BR');
+          document.getElementById('metric-total').textContent = (match.totalVotes || 0).toLocaleString('pt-BR');
+        }
+      } catch (err) {}
+    };
+
+    function vote(candidate, amount, giftName) {
+      sentCount += amount;
+      document.getElementById('metric-sent').textContent = sentCount;
+      fetch('/api/vote', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ candidate, amount, user: '@test_cockpit', giftName })
+      });
+    }
+
+    function sendCustomGift() {
+      const username = document.getElementById('cust-user').value.trim() || '@anonimo';
+      const giftName = document.getElementById('cust-gift').value;
+      const count = parseInt(document.getElementById('cust-count').value, 10) || 1;
+
+      sentCount += count;
+      document.getElementById('metric-sent').textContent = sentCount;
+
+      fetch('/api/tiktok/event', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, giftName, count })
+      });
+    }
+
+    function stressTest(candidate, totalEvents) {
+      for (let i = 0; i < totalEvents; i++) {
+        setTimeout(() => {
+          vote(candidate, Math.random() > 0.5 ? 1 : 5, candidate === '13' ? 'Rosa' : 'Flor branca');
+        }, i * 120);
+      }
+    }
+  </script>
+</body>
+</html>

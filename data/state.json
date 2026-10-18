@@ -1,0 +1,93 @@
+{
+  "match": {
+    "status": "running",
+    "timerSeconds": 949,
+    "title": "Votação LIVE",
+    "side13": {
+      "name": "13",
+      "label": "Lado 13",
+      "color": "#E51A24",
+      "votes": 10842
+    },
+    "side22": {
+      "name": "22",
+      "label": "Lado 22",
+      "color": "#0BB053",
+      "votes": 11000
+    },
+    "totalVotes": 21842,
+    "pct13": 49.6,
+    "pct22": 50.4
+  },
+  "settings": {
+    "enableHearts": true,
+    "enableSimulatedComments": true,
+    "enableHandAnimation": true,
+    "enableSound": true,
+    "queueMode": "detailed",
+    "transparentBackground": false,
+    "tiktokUsername": ""
+  },
+  "gifts": [
+    {
+      "id": "rose",
+      "name": "Rosa",
+      "targetSide": "13",
+      "votesPerUnit": 1,
+      "icon": "assets/rose.png"
+    },
+    {
+      "id": "white_flower",
+      "name": "Flor branca",
+      "targetSide": "22",
+      "votesPerUnit": 1,
+      "icon": "assets/white_flower.png"
+    },
+    {
+      "id": "gift_box",
+      "name": "Presente",
+      "targetSide": "13",
+      "votesPerUnit": 5,
+      "icon": "assets/gift_box.png"
+    },
+    {
+      "id": "coracao",
+      "name": "Coração",
+      "targetSide": "22",
+      "votesPerUnit": 2,
+      "icon": "assets/rose.png"
+    }
+  ],
+  "eventHistory": [
+    {
+      "id": "1792266252025-cc3vs",
+      "timestamp": 1792266252025,
+      "timeFormatted": "16:44:12",
+      "candidate": "22",
+      "amount": 25,
+      "user": "@admin.live",
+      "giftName": "Flor branca",
+      "avatar": "assets/avatar_streamer.png"
+    },
+    {
+      "id": "1792266239854-z2x9m",
+      "timestamp": 1792266239854,
+      "timeFormatted": "16:43:59",
+      "candidate": "13",
+      "amount": 1,
+      "user": "@admin.live",
+      "giftName": "Rosa",
+      "avatar": "assets/avatar_streamer.png"
+    },
+    {
+      "id": "1792266106886-oxosv",
+      "timestamp": 1792266106886,
+      "timeFormatted": "16:41:46",
+      "candidate": "13",
+      "amount": 5,
+      "user": "@mariana.live",
+      "giftName": "Rosa",
+      "avatar": "assets/avatar_streamer.png"
+    }
+  ]
+}
